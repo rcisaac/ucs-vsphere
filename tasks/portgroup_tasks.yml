@@ -1,0 +1,59 @@
+---
+  - name: Change Teaming for Management Portgroup
+    vmware_portgroup:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      esxi_hostname: '{{ inventory_hostname }}'
+      switch: '{{ mgmt_vswitch }}'
+      portgroup: '{{ mgmt_portgroup }}'
+      vlan: '{{ mgmt_vlan }}'
+      state: present
+      teaming:
+          active_adapters:
+              - '{{ mgmt_uplink1 }}'
+          standby_adapters:
+              - '{{ mgmt_uplink2 }}'
+    delegate_to: localhost
+
+  - name: Remove default port group from install
+    vmware_portgroup:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      esxi_hostname: '{{ inventory_hostname }}'
+      switch: '{{ mgmt_vswitch }}'
+      portgroup: '{{ default_portgroup }}'
+      state: absent
+    delegate_to: localhost
+
+  - name: Create NFS Portgroup
+    vmware_portgroup:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      esxi_hostname: '{{ inventory_hostname }}'
+      switch: '{{ mgmt_vswitch }}'
+      portgroup: '{{ nfs_portgroup }}'
+      vlan_id: '{{ nfs_vlan }}'
+    delegate_to: localhost
+
+  - name: Create vMotion Portgroup
+    vmware_portgroup:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      esxi_hostname: '{{ inventory_hostname }}'
+      switch: '{{ vmotion_vswitch }}'
+      portgroup: '{{ vmotion_portgroup }}'
+      vlan_id: '{{ vmotion_vlan }}'
+      teaming:
+          active_adapters:
+              - '{{ vmotion_uplink1 }}'
+          standby_adapters:
+              - '{{ vmotion_uplink2 }}'
+    delegate_to: localhost

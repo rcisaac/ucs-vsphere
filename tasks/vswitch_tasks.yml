@@ -1,0 +1,28 @@
+---
+  - name: Add uplinks and MTU to vSwitch0
+    vmware_vswitch:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      esxi_hostname: '{{ inventory_hostname }}'
+      switch: '{{ mgmt_vswitch }}'
+      nics:
+      - '{{ mgmt_uplink1 }}'
+      - '{{ mgmt_uplink2 }}'
+      mtu: 9000
+    delegate_to: localhost
+
+  - name: Create vSwitch1
+    vmware_vswitch:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      esxi_hostname: '{{ inventory_hostname }}'
+      switch: '{{ vmotion_vswitch }}'
+      nics:
+      - '{{ vmotion_uplink1 }}'
+      - '{{ vmotion_uplink2 }}'
+      mtu: 9000
+    delegate_to: localhost

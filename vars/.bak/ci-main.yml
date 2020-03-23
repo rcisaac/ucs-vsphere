@@ -1,0 +1,64 @@
+---
+# vars file for ucs-vsphere
+# 
+#esxi_hostname: 10.4.168.35
+esxi_username: root
+esxi_password: "H1ghV0lt"
+
+vcenter_dc: Cisco-CI
+vcenter_cluster: FC-Cluster
+#vcenter_cluster: DC1-test
+
+vcenter_hostname: 10.50.160.100
+vcenter_username: administrator@vsphere.local
+vcenter_password: "H1ghV0lt!"
+
+mgmt_vswitch: "vSwitch0"
+vmotion_vswitch: "vSwitch1"
+app_dvs: "App_DVS"
+dv_version: 6.6.0
+dv_mtu: 9000
+dv_uplink: 2
+dv_protocol: "lldp"
+dv_operation: "both"
+dv_uplink1: "vmnic4"
+dv_uplink2: "vmnic5"
+
+list_of_portgroups:
+  - dvs_portgroup: "web"
+    dvs_vlan: 
+      - "611"
+  - dvs_portgroup: "app"
+    dvs_vlan: 
+      - "711"
+  - dvs_portgroup: "db"
+    dvs_vlan: 
+      - "811"
+
+mgmt_portgroup: "Management Network"
+mgmt_vlan: 511
+default_portgroup: "VM Network"
+nfs_portgroup: "VMKernel-Infra-NFS"
+nfs_vlan: 3050
+nfs_mask: 255.255.255.0
+vmotion_portgroup: "vMotion"
+vmotion_vlan: 3000
+vmotion_mask: 255.255.255.0
+
+list_of_hosts:
+  - host: 10.50.160.21
+    host_ip:
+      vmotion_ip: 192.168.30.21
+      nfs_ip: 192.168.50.21
+  - host: 10.50.160.22
+    host_ip:
+      vmotion_ip: 192.168.30.22
+      nfs_ip: 192.168.50.22
+
+nfs_server1: 192.168.50.251
+nfs_server2: 192.168.50.252
+nfs_type: nfs41
+list_of_nfs:
+    - infra_swap
+    - infra_datastore_1
+    - infra_datastore_2

@@ -1,0 +1,7 @@
+[all:vars]
+ansible_connection=ssh
+ansible_user=root
+ansible_ssh_pass=H1ghV0lt
+
+[esxi]
+10.50.160.21

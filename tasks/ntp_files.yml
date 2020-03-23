@@ -1,0 +1,25 @@
+---
+  - name: Configure NTP server
+    vmware_host_ntp:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      esxi_hostname: '{{ item.0.host }}'
+      ntp_servers:
+          - 172.26.163.254
+    delegate_to: localhost
+  
+  - name: Start ntpd for added hosts
+    vmware_host_service_manager:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      esxi_hostname: '{{ item.0.host }}'
+      service_name: ntpd
+      service_policy: on
+    delegate_to: localhost
+  
+
+

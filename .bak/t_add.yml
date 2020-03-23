@@ -1,0 +1,31 @@
+---
+- name: Host Addition
+  hosts: localhost
+#  hosts: esxi
+  vars_files:
+    - "./vars/main-test.yml"
+    
+  tasks:
+  - name: Add ESXi Host to vCenter
+    vmware_host:
+      #    hostname: '{{ inventory_hostname }}'
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      datacenter: '{{ vcenter_dc }}'
+      cluster: '{{ vcenter_cluster }}'
+      esxi_hostname: '{{ item }}'
+      #esxi_hostname: '{{ list_of_hosts }}'
+      #esxi_hostname: '{{ esxi_hostname }}'
+      esxi_username: '{{ esxi_username }}'
+      esxi_password: '{{ esxi_password }}'
+      fetch_ssl_thumbprint: yes
+      validate_certs: no
+      state: present
+    delegate_to: localhost
+    #include_vars: "./vars/main.yml"
+    loop: 
+       - "10.4.168.35"
+       - "10.4.168.26"
+    #loop: "{{ list_of_hosts }}"
+    

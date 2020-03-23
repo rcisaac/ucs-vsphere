@@ -1,0 +1,14 @@
+---
+  - name: vDS VM Portgroup Creation
+    vmware_dvs_portgroup:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      switch_name: '{{ app_dvs }}'
+      portgroup_name: '{{ item.0.dvs_portgroup }}'
+      vlan_id: '{{ item.1 }}'
+      portgroup_type: earlyBinding
+      num_ports: 120
+      state: present
+    delegate_to: localhost

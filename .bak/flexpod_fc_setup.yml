@@ -1,0 +1,117 @@
+---
+- name: DC setup
+  hosts: localhost
+  vars_files:
+    - "./vars/flexpod-fc-main.yml"
+    
+  tasks:
+# Creation of the vCenter Datacenter object
+#
+  - name: vCenter Datacenter creation
+    vmware_datacenter:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      datacenter_name: '{{ vcenter_dc }}'
+      state: present
+    delegate_to: localhost
+# Cluster creation for the provisioned hosts
+#
+  - name: Cluster creation
+    include_tasks: tasks/cluster_file.yml 
+# Cluster configuration of HA/DRS
+# [specificaiton of VM Swap for cluster not available at this time]
+#
+  - name: Cluster configuration
+    include_tasks: tasks/cluster_configure_file.yml
+# Add provisioned hosts
+# ESXi should be installed, IP/VLAN/Password configured
+#
+  - name: Add ESXi Host to vCenter
+    vmware_host:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      datacenter: '{{ vcenter_dc }}'
+      cluster: '{{ vcenter_cluster }}'
+      esxi_hostname: '{{ item.0.host }}'
+      esxi_username: '{{ esxi_username }}'
+      esxi_password: '{{ esxi_password }}'
+      fetch_ssl_thumbprint: yes
+      validate_certs: no
+      state: present
+    delegate_to: localhost
+    loop: "{{ list_of_hosts | subelements('vmotion_ip') }}" 
+# Configure NTP and SSH
+# adjust if SSH is not needed, though currently a requirement in iSCSI deployments
+# 
+  - name: Setup NTP & SSH on new hosts
+    include_tasks: tasks/services_tasks.yml
+    loop: "{{ list_of_hosts | subelements('vmotion_ip') }}"
+# Adjust base vSwitch and create additional vSwitches
+#
+  - name: Setup vSwitch on new hosts
+    include_tasks: tasks/vswitch_tasks.yml
+    loop: "{{ list_of_hosts | subelements('vmotion_ip') }}"
+# Create and modify portgroups for management, vMotion, and NFS
+#
+  - name: Setup portgroups on new hosts
+    include_tasks: tasks/portgroup_tasks.yml
+    loop: "{{ list_of_hosts | subelements('vmotion_ip') }}"
+# Create VMKernels for vMotion
+#
+  - name: Setup vMotion vmk  on new hosts
+    include_tasks: tasks/vmotion_vmk.yml
+    loop: "{{ list_of_hosts | subelements('vmotion_ip') }}"
+# Create VMKernels for vMotion
+#
+  - name: Setup NFS vmk  on new hosts
+    include_tasks: tasks/nfs_vmk.yml
+    loop: "{{ list_of_hosts | subelements('nfs_ip') }}"
+# Create DVS within vCenter
+#
+  - name: vCenter vDS creation
+    vmware_dvswitch:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      datacenter_name: '{{ vcenter_dc }}'
+      switch_name: '{{ app_dvs }}'
+      version: '{{ dv_version }}'
+      mtu: '{{ dv_mtu }}'
+      uplink_quantity: '{{ dv_uplink }}'
+      discovery_protocol: '{{ dv_protocol }}'
+      discovery_operation: '{{ dv_operation }}'
+      state: present
+    delegate_to: localhost
+
+  - name: vDS VM Portgroup Creation
+    vmware_dvs_portgroup:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      switch_name: '{{ app_dvs }}'
+      portgroup_name: '{{ item.0.dvs_portgroup }}'
+      vlan_id: '{{ item.1 }}'
+      portgroup_type: earlyBinding
+      num_ports: 120
+      state: present
+    delegate_to: localhost
+    loop: "{{ list_of_portgroups | subelements('dvs_vlan') }}"
+# Add hosts to DVS
+#
+  - name: Add Hosts to the vDS
+    include_tasks: tasks/dvs_host_tasks.yml
+    loop: "{{ list_of_hosts | subelements('vmotion_ip') }}"
+# Add NFS Datastores
+# [current task references a single LIF and needs adjustment to alternate between LIFs]
+#
+  - name: Add NFS datastores to each host
+    include_tasks: tasks/nfs_add.yml
+    with_nested:
+      - "{{ list_of_hosts | subelements('vmotion_ip') }}"
+      - "{{ list_of_nfs }}"
+

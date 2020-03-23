@@ -1,0 +1,10 @@
+---
+  - name: Cluster setup
+    vmware_cluster:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      datacenter_name: '{{ vcenter_dc }}'
+      cluster_name: '{{ vcenter_cluster }}'
+    delegate_to: localhost

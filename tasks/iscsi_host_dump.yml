@@ -1,0 +1,3 @@
+---
+  - name: Add iSCSI Send Targets to each host
+    command: esxcli iscsi adapter discovery sendtarget add --address='{{ item }}':3260 --adapter=vmhba64

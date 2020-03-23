@@ -1,0 +1,14 @@
+---
+  - name: Add NFS datastore to each host
+    vmware_host_datastore:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      esxi_hostname: '{{ inventory_hostname }}'
+      datastore_name: '{{ item }}'
+      datastore_type: '{{ nfs_type }}'
+      nfs_server: '{{ nfs_server1 }}'
+      nfs_path: '/{{ item }}'
+      validate_certs: no
+      state: present
+    delegate_to: localhost

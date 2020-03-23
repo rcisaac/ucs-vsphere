@@ -1,0 +1,7 @@
+---
+- name: ESXi Connect
+  hosts: iscsi-esxi
+
+  tasks:
+  - name: execute esx command on host
+    command: esxcfg-mpath -b
