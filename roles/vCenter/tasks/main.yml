@@ -1,0 +1,18 @@
+---
+# Create Datacenter object in vCenter
+#
+  - include_tasks: dc_create.yml
+# Cluster creation for the provisioned hosts
+#
+  - include_tasks: cluster_file.yml
+# Cluster configuration of HA/DRS
+# [specificaiton of VM Swap for cluster not available at this time]
+#
+  - include_tasks: cluster_configure_file.yml
+# Create DVS within vCenter
+#
+  - include_tasks: vds_create.yml
+# Create DVS Portgroups
+#
+  - include_tasks: vds_portgroup_create.yml
+    loop: "{{ list_of_portgroups | subelements('dvs_vlan') }}"

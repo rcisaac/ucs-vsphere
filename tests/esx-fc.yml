@@ -1,7 +1,0 @@
----
-- name: ESXi Connect
-  hosts: esxi
-
-  tasks:
-  - name: execute date on
-    command: esxcfg-mpath -b

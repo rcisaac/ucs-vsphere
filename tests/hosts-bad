@@ -1,8 +1,0 @@
-[all:vars]
-ansible_connection=ssh
-ansible_user=root
-ansible_ssh_pass=H1ghV0lt
-
-[iscsi-esxi]
-10.50.160.31  ansible_ssh_user="root" ansible_ssh_password="H1ghV0lt" vmotion_ip=192.168.30.31  nfs_ip=192.168.50.31  iscsi_a_ip=192.168.10.131 iscsi_b_ip=192.168.20.131
-10.50.160.32  ansible_ssh_user="root" ansible_ssh_password="H1ghV0lt" vmotion_ip=192.168.30.32  nfs_ip=192.168.50.32  iscsi_a_ip=192.168.10.132 iscsi_b_ip=192.168.20.132

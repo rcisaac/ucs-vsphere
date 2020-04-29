@@ -1,0 +1,63 @@
+---
+################################################################################ 
+# 
+# Host Setup Role
+#
+################################################################################ 
+# Add provisioned hosts
+# ESXi should be installed, IP/VLAN/Password configured
+#
+  - include_tasks: add_hosts.yml
+# Configure NTP and SSH
+# adjust if SSH is not needed, though currently a requirement in iSCSI deployments
+#
+  - include_tasks: services_tasks.yml
+# Adjust base vSwitch and create additional vSwitches
+#
+  - include_tasks: vswitch_tasks.yml
+# Adjust initial iSCSI vSwitch and create a B iSCSI vSwitch
+#
+  - include_tasks: iscsi_vswitch_tasks.yml
+# Create and modify portgroups for management, vMotion, and NFS
+#
+  - include_tasks: portgroup_tasks.yml
+# Create portgroup for iSCSI-B
+#
+  - include_tasks: iscsi_portgroup_tasks.yml
+# Create VMKernel for vMotion
+#
+  - include_tasks: vmotion_vmk.yml
+# Create VMKernel for NFS
+#
+  - include_tasks: nfs_vmk.yml
+# Modify VMKernel for iSCSI A and Create VMKernel for iSCSI B
+#
+  - include_tasks: iscsi_vmk.yml
+# Add NFS Datastores to hosts
+#
+  - include_tasks: nfs_add.yml
+    loop: "{{ list_of_nfs }}"
+# Add iSCSI dynamic send targets to hosts
+#
+  - include_tasks: iscsi_send_targets.yml
+    loop: "{{ iscsi_targets }}"
+
+################################################################################ 
+# 
+# Host Add to DVS as a serial operation to prevent a problem with parallel add
+#
+################################################################################ 
+#- name: Add Hosts to DVS
+#  hosts: esxi_iscsi
+#  gather_facts: no
+#  serial: 1
+#  vars_files:
+#    - "./vars/iscsi-main.yml"
+#
+#  tasks:
+#
+# Add hosts to DVS
+#
+#  - include_tasks: dvs_host_tasks.yml
+  #  serial: 1
+

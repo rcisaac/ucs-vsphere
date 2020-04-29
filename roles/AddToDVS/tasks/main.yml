@@ -1,0 +1,16 @@
+---
+################################################################################ 
+# 
+# Add to DVS Role
+#
+################################################################################ 
+# Add hosts to created DVS within vCenter
+# Broken off from main Hosts role to allow sequential execution as parallel 
+# execution fails within vCenter
+#
+
+# Add hosts to DVS
+#
+  - include_tasks: dvs_host_tasks.yml
+  #  serial: 1
+
