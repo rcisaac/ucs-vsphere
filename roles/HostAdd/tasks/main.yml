@@ -1,16 +1,19 @@
 ---
 ################################################################################ 
 # 
-# Add to DVS Role
+# Add Hosts to vCenter and configured vDS
 #
 ################################################################################ 
-# Add hosts to created DVS within vCenter
 # Broken off from main Hosts role to allow sequential execution as parallel 
-# execution fails within vCenter
+# execution will sometimes fail within vCenter
 #
+
+# Add provisioned hosts
+# ESXi should be installed, IP/VLAN/Password configured
+#
+   - include_tasks: add_hosts.yml
 
 # Add hosts to DVS
 #
-  - include_tasks: dvs_host_tasks.yml
-  #  serial: 1
+   - include_tasks: dvs_host_tasks.yml
 

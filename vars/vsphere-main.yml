@@ -1,20 +1,20 @@
 ---
 # vars file for ucs-vsphere
 # 
-#configure_iscsi: yes
+configure_iscsi: yes
 configure_nfs: yes
 # To be implemented still
 #configure_vmfs: yes
 
 esxi_username: root
-esxi_password: "cisco123!"
+esxi_password: "H1ghV0lt"
 
 vcenter_dc: Cisco-CI
 vcenter_cluster: VSI-Cluster
 
 vcenter_hostname: 10.50.160.100
 vcenter_username: administrator@vsphere.local
-vcenter_password: "Cisco123!"
+vcenter_password: "H1ghV0lt!"
 
 # Uplinks
 #

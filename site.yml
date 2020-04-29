@@ -24,17 +24,17 @@
 - hosts: esxi_iscsi
 #- hosts: esxi_fc
   gather_facts: no
-  vars_files:
-    - "./vars/vsphere-main.yml"
-  roles:
-    - Hosts
-
-- hosts: esxi_iscsi
-#- hosts: esxi_fc
-  gather_facts: no
   serial: 1
   vars_files:
     - "./vars/vsphere-main.yml"
   roles:
-    - AddToDVS
+    - HostAdd
+
+- hosts: esxi_iscsi
+#- hosts: esxi_fc
+  gather_facts: no
+  vars_files:
+    - "./vars/vsphere-main.yml"
+  roles:
+    - HostConfig
 
