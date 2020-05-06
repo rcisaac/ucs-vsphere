@@ -38,3 +38,7 @@
 #
   - include_tasks: iscsi_send_targets.yml
     loop: "{{ iscsi_targets }}"
+# Determine LUN storage device names
+#
+  - include_tasks: vmfs_add.yml
+  #- include_tasks: storage_device_names.yml

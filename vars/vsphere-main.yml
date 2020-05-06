@@ -3,8 +3,7 @@
 # 
 configure_iscsi: yes
 configure_nfs: yes
-# To be implemented still
-#configure_vmfs: yes
+configure_vmfs: yes
 
 esxi_username: root
 esxi_password: "H1ghV0lt"
@@ -80,3 +79,11 @@ list_of_nfs:
     - infra_swap
     - infra_datastore_1
     - infra_datastore_2
+
+list_of_vmfs:
+  - ds_name: "test1"
+    vmfs_lun: 
+      - "105"
+  - ds_name: "test2"
+    vmfs_lun: 
+      - "106"

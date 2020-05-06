@@ -1,0 +1,54 @@
+---
+  - name: Scan all host adapters
+    command: esxcli storage core adapter rescan --all
+    #command: esxcfg-rescan -A
+    when: configure_vmfs is defined
+
+  - name: Scan all hosts for new LUNs
+    command: vmkfstools -V
+    when: configure_vmfs is defined
+
+  - name: Pause to allow established VMFS datastores to be recognized
+    pause:
+      minutes: 1
+
+  - name: Scan first host to gather device names
+    command: esxcfg-mpath -b
+    register: results
+    when: 
+      - inventory_hostname == play_hosts[0]
+      - configure_vmfs is defined
+
+  - name: Parse scan output to get list of devices
+    set_fact:
+      first_parse: "{{ results.stdout.split('\n\n') }}"
+    when: 
+      - inventory_hostname == play_hosts[0]
+      - configure_vmfs is defined
+
+  - name: Refine Parsed output into a dictionary of LUNs and storage device names
+    set_fact:
+      device_dict: "{{ device_dict|default({}) | combine( {item.split('\n')[1].split()[1].split(':')[1]: item.split('\n')[0].split(' : ')[0]} ) }}"
+    when: 
+      - inventory_hostname == play_hosts[0]
+      - configure_vmfs is defined
+    with_items: "{{ first_parse }}"
+
+  - name: Add VMFS Datastores
+    vmware_host_datastore:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      datastore_name: '{{ item.0.ds_name }}'
+      datastore_type: vmfs
+      vmfs_device_name: '{{ device_dict[item.1] }}'
+      vmfs_version: 6
+      esxi_hostname: '{{ inventory_hostname }}'
+      state: present
+    delegate_to: localhost
+    when: 
+      - inventory_hostname == play_hosts[0]
+      - configure_vmfs is defined
+    loop: "{{ list_of_vmfs | subelements('vmfs_lun') }}"
+    retries: 5

@@ -13,3 +13,6 @@
       validate_certs: no
       state: present
     delegate_to: localhost
+# Retries set in case first connection to host and it doesn't initially respond
+#
+    retries: 5

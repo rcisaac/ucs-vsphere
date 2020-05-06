@@ -32,6 +32,7 @@
 
 - hosts: esxi_iscsi
 #- hosts: esxi_fc
+  debugger: on_failed
   gather_facts: no
   vars_files:
     - "./vars/vsphere-main.yml"
