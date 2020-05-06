@@ -1,7 +1,6 @@
 ---
   - name: Scan all host adapters
     command: esxcli storage core adapter rescan --all
-    #command: esxcfg-rescan -A
     when: configure_vmfs is defined
 
   - name: Scan all hosts for new LUNs
