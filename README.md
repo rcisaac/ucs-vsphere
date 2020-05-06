@@ -1,32 +1,52 @@
 # ucs-vsphere
-Role Name
+
+A collection of roles built as an example playbook to implement some base vCenter and host configurations for a Cisco UCS Converged Infrastructure placement.
+
+Example invocation:
+
+`   ansible-playbook -i inventory site.yml    `
+
+Role - vCenter
 =========
 
-A brief description of the role goes here.
+Setup of a freshly deployed vCenter appliance, creating a datacenter, cluster, vDS, and some example vDS portgroups.
+
+Role - HostAdd
+=========
+
+Add hosts to vCenter and the created vDS.  Broken off from HostConfig to be run in serial between hosts to prevent issues within vCenter.
+
+Role - HostConfig
+=========
+
+Configured services, networking, and storage.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+The VMware pyvmomi is required as well as the vSphere automation python sdk:
+
+`    pip install pyvmomi`
+
+`    pip install --upgrade git+https://github.com/vmware/vsphere-automation-sdk-python.git `
+
+Expectation of invoking this playbook/roles is for a freshly provisioned vCenter instance (tested on vCenter 6.7 U2), as well as newly installed ESXi instances that have been configured with basic IP and VLAN information for the management interface of the ESXi host.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Variables need to be scrutinized to adjust to values appropriate to the intended environment.  At a minimum, the esxi_password and vcenter_password as well as appropriate username variables will need to be adjusted to what is set for the ESXi hosts and the vCenter. 
+
+The example inventory file has host groups of 'esxi_fc' and 'esxi_iscsi' that are to be referenced as the hosts in the site.yml.  These example host groups include the appropriate vmkernel values to be set for the hosts, with iSCSI appropriate values being used if the 'configure_iscsi' variable is defined.  Additional iSCSI appropriate variables are specified in the variable file that will be referenced if 'configure_iscsi' is defined.  VMFS datastores can be added with the enablement of the 'configure_vmfs' variable.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+The roles listed have dependencies to run in the order specified in the site.yml
 
-Example Playbook
-----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+1. vCenter
+2. HostAdd
+3. HostConfig
 
 License
 -------
@@ -35,5 +55,4 @@ BSD
 
 Author Information
 ------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Ramesh Isaac, Technical Marketing Engineer with UCS Data Center Solutions at Cisco
