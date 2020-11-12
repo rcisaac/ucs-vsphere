@@ -6,14 +6,14 @@ configure_nfs: yes
 configure_vmfs: yes
 
 esxi_username: root
-esxi_password: "H1ghV0lt"
+esxi_password: "Cisco123!"
 
 vcenter_dc: Cisco-CI
 vcenter_cluster: VSI-Cluster
 
 vcenter_hostname: 10.50.160.100
 vcenter_username: administrator@vsphere.local
-vcenter_password: "H1ghV0lt!"
+vcenter_password: "Cisco123!"
 
 # Uplinks
 #
