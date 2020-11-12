@@ -1,7 +1,7 @@
 [all:vars]
 ansible_connection=ssh
 ansible_user=root
-ansible_ssh_pass=H1ghV0lt
+ansible_ssh_pass=Cisco123
 ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 [esxi_fc]
